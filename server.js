@@ -31,19 +31,26 @@ app.get('/shopping-list', (req, res) => {
   res.json(ShoppingList.get());
 });
 
-app.post('/shopping-list', jsonParser, (req, res) => {
+createShoppingList = (input) => {
   // ensure `name` and `budget` are in request body
   const requiredFields = ['name', 'budget'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
-    if (!(field in req.body)) {
+    if (!(field in input)) {
       const message = `Missing \`${field}\` in request body`
       console.error(message);
-      return res.status(400).send(message);
+      return {
+        status: 400, message: message) 
+      }
+      //res.status(400).send(message);
     }
-
+    // create shopping list item
+    return { status: 201 };
   }
-});
+}
+expect(createShoppingList({ name: 'bla', budget: 1000 })).toEqual({ status: 201 })
+
+app.post('/shopping-list', jsonParser, createShoppingList);
 
 app.post('/recipes', jsonParser, (req, res) => {
 
